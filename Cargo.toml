@@ -1,9 +1,11 @@
 [package]
-name = "runies"
-version = "0.1.0"
 authors = ["Wendell Smith <wackywendell@gmail.com>"]
 edition = "2018"
+name = "runies"
+version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+itertools = "0.10.1"
+unicode_names2 = "0.4.0"
