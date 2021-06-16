@@ -8,4 +8,5 @@ version = "0.1.0"
 
 [dependencies]
 itertools = "0.10.1"
+unicode-segmentation = "1.7.1"
 unicode_names2 = "0.4.0"
