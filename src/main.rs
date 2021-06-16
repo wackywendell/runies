@@ -1,13 +1,15 @@
 use std::io::{self, Read};
 
 use itertools::Itertools;
-use unicode_segmentation::UnicodeSegmentation;
+use unic::char::property::EnumeratedCharProperty;
+use unic::segment::Graphemes;
+use unic::ucd::{Block, GeneralCategory, Name};
 
 fn main() -> io::Result<()> {
     let mut input = String::new();
     io::stdin().read_to_string(&mut input)?;
 
-    let graphemes = UnicodeSegmentation::graphemes(input.as_str(), true).collect::<Vec<&str>>();
+    let graphemes = Graphemes::new(input.as_str()).collect::<Vec<&str>>();
 
     let char_indices = input.char_indices().collect::<Vec<_>>();
 
@@ -37,16 +39,21 @@ fn main() -> io::Result<()> {
 
         for ((ix, c), (eix, _)) in char_indices.iter().copied().circular_tuple_windows() {
             let eix = if eix == 0 { cluster.len() } else { eix };
-            let name = unicode_names2::name(c).map(|n| n.to_string());
+            let name = Name::of(c).map(|n| n.to_string());
             let name_str = name.as_ref().unwrap_or(&unknown);
+            let block = Block::of(c).map(|b| b.name);
+            let block_str = block.unwrap_or(&unknown);
+            let ctg = GeneralCategory::of(c);
 
             println!(
-                "{}\"{}\" : 0x{:x} ({}), bytes {:x?}, name: {}",
+                "{}\"{}\" : 0x{:x} ({}), bytes {:x?}, category: {}, block: {}, name: {}",
                 start,
                 c,
                 c as u32,
                 c as u32,
                 &cluster.as_bytes()[ix..eix],
+                ctg.abbr_name(),
+                block_str,
                 name_str,
             )
         }
